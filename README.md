@@ -25,6 +25,7 @@ run the the fastAPI app
 ```
 uvicorn main:app --reload
 ```
+To access the swagger ui doc: http://127.0.0.1:8000/docs
 
 Book library provide a Basic API Compose :
 
