@@ -6,14 +6,16 @@ from sqlalchemy.orm import Session
 
 app = FastAPI()
 
-model.Base.metadata.create_all(bind = engine)
+model.Base.metadata.create_all(bind=engine)
+
 
 def get_db():
-    try: 
+    try:
         db = SessionLocal()
         yield db
     finally:
         db.close()
+
 
 class Book(BaseModel):
     title: str = Field(min_length=1)
@@ -26,11 +28,16 @@ BOOKS = []
 
 
 @app.get("/")
+async def message():
+    return "Welcome to book libarary!"
+
+
+@app.get("/list_books")
 async def list_books(db: Session = Depends(get_db)):
     return db.query(model.Books).all()
 
 
-@app.post("/")
+@app.post("/create_book")
 def create_book(book: Book, db: Session = Depends(get_db)):
     book_model = model.Books()
     book_model.title = book.title
@@ -45,8 +52,9 @@ def create_book(book: Book, db: Session = Depends(get_db)):
 
 @app.put("/update_book/{book_id}")
 def update_book(book_id: int, book: Book, db: Session = Depends(get_db)):
-    book_model = db.query(model.Books).filter(model.Books.id == book_id).first()
-    
+    book_model = db.query(model.Books).filter(
+        model.Books.id == book_id).first()
+
     if book_model is None:
         raise HTTPException(
             status_code=404,
@@ -64,8 +72,8 @@ def update_book(book_id: int, book: Book, db: Session = Depends(get_db)):
 
 @app.delete("/delete_book/{book_id}")
 def delete_book(book_id: int, db: Session = Depends(get_db)):
-    book_model = db.query(model.Books).filter(model.Books.id == book_id).first()
-
+    book_model = db.query(model.Books).filter(
+        model.Books.id == book_id).first()
 
     if book_model is None:
         raise HTTPException(
