@@ -37,8 +37,8 @@ async def list_books(db: Session = Depends(get_db)):
     return db.query(model.Books).all()
 
 
-@app.post("/create_book")
-def create_book(book: Book, db: Session = Depends(get_db)):
+@app.post("/add_book")
+def add_book(book: Book, db: Session = Depends(get_db)):
     book_model = model.Books()
     book_model.title = book.title
     book_model.author = book.author
